@@ -1,0 +1,14 @@
+ext {
+    publishingGroupId = "com.arthurivanets"
+    publishingProjectUrl = "https://github.com/arthur3486/born2crawl"
+    publishingLicenseName = "The Apache Software License, Version 2.0"
+    publishingLicenseUrl = "https://github.com/arthur3486/born2crawl/blob/main/LICENSE"
+    publishingDeveloperId = "arthur3486"
+    publishingDeveloperName = "Arthur Ivanets"
+    publishingDeveloperEmail = "arthur.ivanets.work@gmail.com"
+    publishingScmConnection = "scm:git:github.com/arthur3486/born2crawl.git"
+    publishingScmDeveloperConnection = "scm:git:ssh://github.com/arthur3486/born2crawl.git"
+    publishingScmSiteUrl = "https://github.com/arthur3486/born2crawl"
+    publishingHostRepoName = "sonatype"
+    publishingHostRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+}

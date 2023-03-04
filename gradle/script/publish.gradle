@@ -1,0 +1,80 @@
+apply plugin: "maven-publish"
+apply plugin: "java-library"
+apply plugin: "signing"
+apply from: "${rootDir}/gradle/common/constants.gradle"
+
+group = PUBLISHING_GROUP_ID
+version = PUBLISHING_ARTIFACT_VERSION
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISHING_GROUP_ID
+                artifactId PUBLISHING_ARTIFACT_ID
+                version PUBLISHING_ARTIFACT_VERSION
+
+                from components.java
+
+                pom {
+                    name = PUBLISHING_ARTIFACT_ID
+                    description = PUBLISHING_ARTIFACT_DESCRIPTION
+                    url = publishingProjectUrl
+
+                    licenses {
+                        license {
+                            name = publishingLicenseName
+                            url = publishingLicenseUrl
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = publishingDeveloperId
+                            name = publishingDeveloperName
+                            email = publishingDeveloperEmail
+                        }
+                    }
+
+                    scm {
+                        connection = publishingScmConnection
+                        developerConnection = publishingScmDeveloperConnection
+                        url = publishingScmSiteUrl
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = publishingHostRepoName
+                url = uri(publishingHostRepoUrl)
+
+                credentials {
+                    username = getPropertyOrDefault("SONATYPE_NEXUS_USERNAME", System.getenv("SONATYPE_NEXUS_USERNAME"))
+                    password = getPropertyOrDefault("SONATYPE_NEXUS_PASSWORD", System.getenv("SONATYPE_NEXUS_PASSWORD"))
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+private def getPropertyOrDefault(key, defaultValue) {
+    def foundProperty = properties[key]
+    return ((foundProperty != null) ? foundProperty : defaultValue)
+}

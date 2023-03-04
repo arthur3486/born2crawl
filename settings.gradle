@@ -1,0 +1,70 @@
+/*
+ * Copyright 2022 Arthur Ivanets, arthur.ivanets.work@gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+rootProject.name = "born2crawl"
+
+// Find all of the gradle project modules and add them to the build.
+findAllGradleModules(file("./")).each { moduleName -> include moduleName }
+
+// Utility Methods
+
+private List<String> findAllGradleModules(File rootDirectory) {
+    final def foundModules = new ArrayList<String>()
+    final def pendingTraversals = new LinkedList<PendingTraversal>()
+
+    pendingTraversals.push(new PendingTraversal("", rootDirectory))
+
+    while (!pendingTraversals.isEmpty()) {
+        final def pendingTraversal = pendingTraversals.pop()
+        final def traversalFile = pendingTraversal.file
+
+        if (traversalFile.isDirectory()) {
+            final def moduleName = (((traversalFile != rootDirectory)) ? "${pendingTraversal.modulePath}:${traversalFile.name}" : "")
+
+            if (isGradleModule(traversalFile)) {
+                if (!moduleName.isEmpty()) {
+                    print("Found Module -> $moduleName\n")
+                }
+
+                foundModules.add(moduleName)
+            }
+
+            traversalFile.listFiles()
+                    .each { pendingTraversals.push(new PendingTraversal(moduleName, it)) }
+        }
+    }
+
+    return foundModules
+}
+
+private boolean isGradleModule(File moduleDirectory) {
+    return (moduleDirectory.isDirectory() && file("${moduleDirectory.absolutePath}/build.gradle").exists())
+}
+
+class PendingTraversal {
+
+    final String modulePath
+    final File file
+
+    PendingTraversal(String modulePath, File file) {
+        this.modulePath = modulePath
+        this.file = file
+    }
+
+}
+
+include 'sample'
+
