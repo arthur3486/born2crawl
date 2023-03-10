@@ -27,8 +27,6 @@ test {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-
     api project(":born2crawl-core")
 
     api "com.squareup.okhttp3:okhttp:4.10.0"
