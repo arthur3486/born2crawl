@@ -29,11 +29,11 @@ test {
 dependencies {
     implementation project(":born2crawl-core")
 
-    implementation "com.google.code.gson:gson:2.10"
+    implementation "com.google.code.gson:gson:${depVersions.gson}"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.0"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.0"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${depVersions.jUnit}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${depVersions.jUnit}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${depVersions.kotlinCoroutines}"
 }
 
 ext {

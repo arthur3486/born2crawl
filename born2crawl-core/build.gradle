@@ -28,16 +28,16 @@ test {
 
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${depVersions.kotlinCoroutines}"
 
-    api "org.slf4j:slf4j-api:2.0.6"
-    api "org.apache.logging.log4j:log4j-core:2.19.0"
-    api "org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0"
+    api "org.slf4j:slf4j-api:${depVersions.sl4j}"
+    api "org.apache.logging.log4j:log4j-core:${depVersions.log4j}"
+    api "org.apache.logging.log4j:log4j-slf4j2-impl:${depVersions.log4j}"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.0"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.0"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${depVersions.jUnit}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${depVersions.jUnit}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${depVersions.kotlinCoroutines}"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:${depVersions.mockito}"
 }
 
 ext {
