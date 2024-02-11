@@ -16,32 +16,31 @@
 
 package com.arthurivanets.born2crawl
 
-import com.arthurivanets.born2crawl.util.pop
+import com.arthurivanets.born2crawl.util.remove
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 
-internal class LinkedListExtensionsTests {
+internal class CrawlFrontierExtensionsTests {
 
     @Test
-    fun `pop multiple items - invalid number of items`() {
-        val stack = LinkedList<Int>()
+    fun `remove multiple items - invalid number of items`() {
+        val frontier = TraversalAlgorithm.DFS.createCrawlFrontier<Int>()
 
         assertThrows<IllegalArgumentException> {
-            stack.pop(-1)
+            frontier.remove(-1)
         }
     }
 
     @Test
-    fun `pop multiple items - number of items is less than total size`() {
-        val stack = LinkedList<Int>()
-        stack.push(1)
-        stack.push(2)
-        stack.push(3)
-        stack.push(4)
+    fun `remove multiple items - number of items is less than total size`() {
+        val frontier = TraversalAlgorithm.DFS.createCrawlFrontier<Int>()
+        frontier.add(1)
+        frontier.add(2)
+        frontier.add(3)
+        frontier.add(4)
 
-        val items = stack.pop(2)
+        val items = frontier.remove(2)
 
         assertEquals(2, items.size)
         assertEquals(4, items[0])
@@ -49,13 +48,13 @@ internal class LinkedListExtensionsTests {
     }
 
     @Test
-    fun `pop multiple items - number of items is greater than total size`() {
-        val stack = LinkedList<Int>()
-        stack.push(1)
-        stack.push(2)
-        stack.push(3)
+    fun `remove multiple items - number of items is greater than total size`() {
+        val frontier = TraversalAlgorithm.DFS.createCrawlFrontier<Int>()
+        frontier.add(1)
+        frontier.add(2)
+        frontier.add(3)
 
-        val items = stack.pop(4)
+        val items = frontier.remove(4)
 
         assertEquals(3, items.size)
         assertEquals(3, items[0])
