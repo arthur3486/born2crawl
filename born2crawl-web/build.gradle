@@ -29,12 +29,12 @@ test {
 dependencies {
     api project(":born2crawl-core")
 
-    api "com.squareup.okhttp3:okhttp:4.10.0"
-    api "org.jsoup:jsoup:1.15.3"
+    api "com.squareup.okhttp3:okhttp:${depVersions.okHttp}"
+    api "org.jsoup:jsoup:${depVersions.jSoup}"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.0"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.0"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${depVersions.jUnit}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${depVersions.jUnit}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${depVersions.kotlinCoroutines}"
 }
 
 ext {

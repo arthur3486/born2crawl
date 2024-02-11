@@ -1,4 +1,15 @@
 ext {
+    depVersions = [
+        kotlinCoroutines: "1.7.3",
+        okHttp          : "4.12.0",
+        jUnit           : "5.9.0",
+        gson            : "2.10",
+        jSoup           : "1.15.3",
+        log4j           : "2.19.0",
+        sl4j            : "2.0.6",
+        mockito         : "4.1.0",
+    ]
+
     publishingGroupId = "com.arthurivanets"
     publishingProjectUrl = "https://github.com/arthur3486/born2crawl"
     publishingLicenseName = "The Apache Software License, Version 2.0"
