@@ -35,6 +35,7 @@ interface CrawlingSession {
         val inputProcessors: Set<InputProcessor>,
         val coroutineDispatcher: CoroutineDispatcher,
         val resultStore: CrawlingResultStore,
+        val traversalAlgorithm: TraversalAlgorithm = TraversalAlgorithm.BFS,
         val throttler: Throttler = NoThrottling,
         val maxCrawlDepth: Int = Int.MAX_VALUE,
     )

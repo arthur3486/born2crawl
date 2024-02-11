@@ -77,6 +77,11 @@ class Crawler(private val config: Config) {
         val maxCrawlDepth: Int
 
         /**
+         * The data graph traversal algorithm to be used by [CrawlingSession]s when processing the data.
+         */
+        val traversalAlgorithm: TraversalAlgorithm
+
+        /**
          * The [CoroutineDispatcher] to be used by [CrawlingSession]s when spawning processing-specific coroutines.
          */
         val coroutineDispatcher: CoroutineDispatcher
@@ -176,7 +181,8 @@ class Crawler(private val config: Config) {
          *
          * @param inputProcessingBatchSize the maximum allowed number of crawling inputs to be submitted for concurrent processing by a single [CrawlingSession].
          * @param maxCrawlDepth the maximum allowed depth of a tree of crawling outputs that a [CrawlingSession] is allowed to traverse.
-         * @param throttlingConfig The configuration for the throttling of the input processing requests initiated by the [CrawlingSession]s (See [ThrottlingConfig] for more details).
+         * @param traversalAlgorithm the data graph traversal algorithm to be used by [CrawlingSession]s when processing the data.
+         * @param throttlingConfig the configuration for the throttling of the input processing requests initiated by the [CrawlingSession]s (See [ThrottlingConfig] for more details).
          *
          * @return the configuration for the [Crawler]
          */
@@ -187,6 +193,7 @@ class Crawler(private val config: Config) {
             crawlingSessionParallelism: Int = 10,
             inputProcessingBatchSize: Int = 10,
             maxCrawlDepth: Int = Int.MAX_VALUE,
+            traversalAlgorithm: TraversalAlgorithm = TraversalAlgorithm.BFS,
             throttlingConfig: ThrottlingConfig = ThrottlingConfig.NoOp,
         ): Config {
             require(inputProcessors.isNotEmpty()) { "Please, provide at least one InputProcessor" }
@@ -201,6 +208,7 @@ class Crawler(private val config: Config) {
                 override val inputProcessingBatchSize = inputProcessingBatchSize
                 override val maxCrawlDepth = maxCrawlDepth
                 override val coroutineDispatcher = Dispatchers.IO
+                override val traversalAlgorithm = traversalAlgorithm
                 override val throttlingConfig = throttlingConfig
                 override val crawlingSessionFactory = ::CrawlingSessionImpl
                 override val eventListener = eventListener
@@ -278,6 +286,7 @@ class Crawler(private val config: Config) {
                 inputProcessors = config.inputProcessors,
                 coroutineDispatcher = config.coroutineDispatcher,
                 resultStore = config.resultStore,
+                traversalAlgorithm = config.traversalAlgorithm,
                 throttler = config.throttlingConfig.throttler(),
                 maxCrawlDepth = config.maxCrawlDepth,
             )

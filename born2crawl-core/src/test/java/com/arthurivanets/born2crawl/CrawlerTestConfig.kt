@@ -24,6 +24,7 @@ fun Crawler.Companion.TestConfig(
     eventListener: ((Crawler.Event) -> Unit),
     crawlingSessionFactory: ((CrawlingSession.Config) -> CrawlingSession),
     coroutineDispatcher: CoroutineDispatcher,
+    traversalAlgorithm: TraversalAlgorithm = TraversalAlgorithm.BFS,
     throttlingConfig: ThrottlingConfig = ThrottlingConfig.NoOp,
     crawlingSessionParallelism: Int = 10,
     inputProcessingBatchSize: Int = 10,
@@ -36,6 +37,7 @@ fun Crawler.Companion.TestConfig(
         override val inputProcessingBatchSize = inputProcessingBatchSize
         override val maxCrawlDepth = maxCrawlDepth
         override val coroutineDispatcher = coroutineDispatcher
+        override val traversalAlgorithm = traversalAlgorithm
         override val throttlingConfig = throttlingConfig
         override val crawlingSessionFactory = crawlingSessionFactory
         override val eventListener = eventListener

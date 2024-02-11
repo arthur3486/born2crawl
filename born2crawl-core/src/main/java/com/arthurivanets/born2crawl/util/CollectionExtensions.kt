@@ -16,16 +16,16 @@
 
 package com.arthurivanets.born2crawl.util
 
-import java.util.*
+import com.arthurivanets.born2crawl.CrawlFrontier
 
-internal fun <T> LinkedList<T>.pop(numberOfItems: Int): List<T> {
+internal fun <T> CrawlFrontier<T>.remove(numberOfItems: Int): List<T> {
     require(numberOfItems >= 0) { "Number of items to be popped cannot be lower than 0. Requested number of items: $numberOfItems" }
 
-    val poppedItems = mutableListOf<T>()
+    val removedItems = mutableListOf<T>()
 
-    while (this.isNotEmpty() && (poppedItems.size < numberOfItems)) {
-        poppedItems += this.pop()
+    while (!this.isEmpty() && (removedItems.size < numberOfItems)) {
+        this.remove()?.let(removedItems::add)
     }
 
-    return poppedItems
+    return removedItems
 }

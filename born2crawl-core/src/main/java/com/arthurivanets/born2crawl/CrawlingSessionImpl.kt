@@ -19,9 +19,8 @@ package com.arthurivanets.born2crawl
 import com.arthurivanets.born2crawl.InputProcessor.Result
 import com.arthurivanets.born2crawl.util.UniqueIds
 import com.arthurivanets.born2crawl.util.logger
-import com.arthurivanets.born2crawl.util.pop
+import com.arthurivanets.born2crawl.util.remove
 import kotlinx.coroutines.*
-import java.util.*
 
 internal class CrawlingSessionImpl(private val config: CrawlingSession.Config) : CrawlingSession {
 
@@ -98,15 +97,14 @@ internal class CrawlingSessionImpl(private val config: CrawlingSession.Config) :
 
     private suspend fun beginTraversal(): CrawlingContext = coroutineScope {
         val crawlingContext = MutableCrawlingContext()
-
-        val pendingTraversals = LinkedList<TraversalData<CrawlingInput>>()
+        val crawlFrontier = config.traversalAlgorithm.createCrawlFrontier<TraversalData<CrawlingInput>>()
 
         config.initialInputs.forEach { initialInput ->
-            pendingTraversals.push(TraversalData(0, CrawlingInput(Source("root", "root"), initialInput)))
+            crawlFrontier.add(TraversalData(0, CrawlingInput(Source("root", "root"), initialInput)))
         }
 
-        while (pendingTraversals.isNotEmpty()) {
-            val inputs = pendingTraversals.pop(config.inputProcessingBatchSize)
+        while (!crawlFrontier.isEmpty()) {
+            val inputs = crawlFrontier.remove(config.inputProcessingBatchSize)
             val crawlingOutputs = processInputs(inputs, crawlingContext)
 
             for (crawlingOutput in crawlingOutputs) {
@@ -114,7 +112,7 @@ internal class CrawlingSessionImpl(private val config: CrawlingSession.Config) :
 
                 if (crawlingOutput.crawlDepth < config.maxCrawlDepth) {
                     crawlingOutput.toCrawlingInput()
-                        .forEach(pendingTraversals::push)
+                        .forEach(crawlFrontier::add)
                 }
             }
         }
