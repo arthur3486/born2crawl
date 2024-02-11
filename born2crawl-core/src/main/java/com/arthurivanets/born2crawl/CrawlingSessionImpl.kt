@@ -47,6 +47,15 @@ internal class CrawlingSessionImpl(private val config: CrawlingSession.Config) :
         sessionScope.launch {
             val startTime = System.currentTimeMillis()
 
+            log.info("Crawling has started. Input = ${config.initialInputs}")
+
+            dispatchEvent(
+                CrawlingSession.Event.CrawlingStarted(
+                    sessionId = sessionId,
+                    initialInputs = config.initialInputs,
+                )
+            )
+
             try {
                 val crawlingContext = beginTraversal()
                 val crawlingDuration = crawlingDuration(startTime)

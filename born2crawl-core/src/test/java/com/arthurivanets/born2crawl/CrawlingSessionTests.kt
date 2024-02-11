@@ -107,6 +107,10 @@ internal class CrawlingSessionTests {
         session.eventListener = eventListener
         session.init()
 
+        val crawlingStartedEvent = eventListener.collectedEvents.find { event -> (event is Event.CrawlingStarted) }
+
+        assertNotNull(crawlingStartedEvent)
+
         val crawlingFinishedEvent = eventListener.collectedEvents.find { event -> (event is Event.CrawlingFinished) }
 
         assertNotNull(crawlingFinishedEvent)
