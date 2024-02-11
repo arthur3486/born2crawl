@@ -45,6 +45,17 @@ interface CrawlingSession {
     sealed interface Event {
 
         /**
+         * An event indicating that a crawling session has started.
+         *
+         * @param sessionId the id of the session that emitted the event.
+         * @param initialInputs the inputs (seeds) that were used to start a crawling session.
+         */
+        class CrawlingStarted(
+            val sessionId: String,
+            val initialInputs: Set<String>,
+        ) : Event
+
+        /**
          * An event indicating that a crawling session completed successfully.
          *
          * @param resultId the id of the stored [CrawlingResult] (the result can be retrieved from the [CrawlingResultStore]).

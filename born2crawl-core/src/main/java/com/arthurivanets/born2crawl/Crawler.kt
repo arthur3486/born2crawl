@@ -106,13 +106,26 @@ class Crawler(private val config: Config) {
     sealed interface Event {
 
         /**
+         * An event indicating that a crawling session has started.
+         *
+         * @param sessionId the id of the session that emitted the event.
+         * @param crawlingInput the inputs (seeds) that were used to start a crawling session.
+         */
+        data class CrawlingStarted(
+            val sessionId: String,
+            val crawlingInput: Set<String>,
+        ) : Event
+
+        /**
          * An event indicating that a crawling session completed successfully.
          *
+         * @param sessionId the id of the session that emitted the event.
          * @param crawlingInput the inputs (seeds) that were used to start a crawling session.
          * @param crawlingResultId the id of the stored [CrawlingResult] (the result can be retrieved from the [CrawlingResultStore]).
          * @param crawlingDuration the exact time it took complete the crawling session.
          */
         data class CrawlingFinished(
+            val sessionId: String,
             val crawlingInput: Set<String>,
             val crawlingResultId: String,
             val crawlingDuration: CrawlingDuration,
@@ -121,11 +134,13 @@ class Crawler(private val config: Config) {
         /**
          * An event indicating that there was a critical failure during the crawling session that interrupted the session.
          *
+         * @param sessionId the id of the session that emitted the event.
          * @param crawlingInput the inputs (seeds) that were used to start a crawling session.
          * @param error the exact error that interrupted the crawling session.
          * @param crawlingDuration the exact duration of the crawling session.
          */
         data class CrawlingFailed(
+            val sessionId: String,
             val crawlingInput: Set<String>,
             val error: Throwable,
             val crawlingDuration: CrawlingDuration,
@@ -273,12 +288,24 @@ class Crawler(private val config: Config) {
 
     private fun handleSessionEvent(event: CrawlingSession.Event) {
         when (event) {
+            is CrawlingSession.Event.CrawlingStarted -> {
+                log.info("Crawling session has started for the initial input: [ ${event.initialInputs} ]")
+
+                dispatchEvent(
+                    Event.CrawlingStarted(
+                        sessionId = event.sessionId,
+                        crawlingInput = event.initialInputs,
+                    )
+                )
+            }
+
             is CrawlingSession.Event.CrawlingFinished -> {
                 log.info("Crawling session finished for the initial input: [ ${event.initialInputs} ]. Session duration: ${event.crawlingDuration.duration}")
 
                 destroyCrawlingSession(event.sessionId)
                 dispatchEvent(
                     Event.CrawlingFinished(
+                        sessionId = event.sessionId,
                         crawlingInput = event.initialInputs,
                         crawlingResultId = event.resultId,
                         crawlingDuration = event.crawlingDuration,
@@ -286,12 +313,14 @@ class Crawler(private val config: Config) {
                 )
                 processPendingInput()
             }
+
             is CrawlingSession.Event.CrawlingFailed -> {
                 log.error("Crawling session failed for the initial input: [ ${event.initialInputs} ]. Session duration: ${event.crawlingDuration.duration}")
 
                 destroyCrawlingSession(event.sessionId)
                 dispatchEvent(
                     Event.CrawlingFailed(
+                        sessionId = event.sessionId,
                         crawlingInput = event.initialInputs,
                         error = event.error,
                         crawlingDuration = event.crawlingDuration,
